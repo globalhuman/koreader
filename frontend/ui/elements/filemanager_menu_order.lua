@@ -25,6 +25,7 @@ local order = {
         -- those that don't exist will simply be skipped during menu gen
         "frontlight", -- if Device:hasFrontlight()
         "night_mode",
+        "opening_book_popup",
         "----------------------------",
         "network",
         "screen",

@@ -849,4 +849,43 @@ if Device:isTouchDevice() or Device:hasKeyboard() or Device:hasScreenKB() then
     }
 end
 
+common_settings.opening_book_popup = {
+    text = _("Book opening popup"),
+    sub_item_table = {
+        {
+            text = _("Show book title when opening"),
+            checked_func = function()
+                return G_reader_settings:isTrue("opening_book_show_title")
+            end,
+            callback = function()
+                G_reader_settings:flipNilOrFalse("opening_book_show_title")
+            end,
+        },
+        {
+            text = _("Show author"),
+            enabled_func = function()
+                return G_reader_settings:isTrue("opening_book_show_title")
+            end,
+            checked_func = function()
+                return G_reader_settings:isTrue("opening_book_show_author")
+            end,
+            callback = function()
+                G_reader_settings:flipNilOrFalse("opening_book_show_author")
+            end,
+        },
+        {
+            text = _("Show cover thumbnail"),
+            enabled_func = function()
+                return G_reader_settings:isTrue("opening_book_show_title")
+            end,
+            checked_func = function()
+                return G_reader_settings:isTrue("opening_book_show_cover")
+            end,
+            callback = function()
+                G_reader_settings:flipNilOrFalse("opening_book_show_cover")
+            end,
+        },
+    },
+}
+
 return common_settings

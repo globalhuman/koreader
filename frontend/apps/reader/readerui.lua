@@ -709,8 +709,39 @@ function ReaderUI:extendProvider(file, provider, is_provider_forced)
 end
 
 function ReaderUI:showReaderCoroutine(file, provider, seamless)
+    local msg_text, msg_image, msg_image_w, msg_image_h
+    if G_reader_settings:isTrue("opening_book_show_title") then
+        local props
+        if BookList.hasBookBeenOpened(file) then
+            props = BookList.getDocSettings(file):readSetting("doc_props")
+        end
+        props = FileManagerBookInfo.extendProps(props, file)
+        msg_text = T(_("Opening '%1'."), props.display_title)
+        if G_reader_settings:isTrue("opening_book_show_author") and props.authors then
+            msg_text = msg_text .. "\n" .. T(_("by %1"), props.authors)
+        end
+        if G_reader_settings:isTrue("opening_book_show_cover") then
+            local custom_cover = DocSettings:findCustomCoverFile(file)
+            if custom_cover then
+                local cover_doc = DocumentRegistry:openDocument(custom_cover)
+                if cover_doc then
+                    msg_image = cover_doc:getCoverPageImage()
+                    cover_doc:close()
+                    if msg_image then
+                        msg_image_w = Screen:scaleBySize(64)
+                        msg_image_h = Screen:scaleBySize(96)
+                    end
+                end
+            end
+        end
+    else
+        msg_text = T(_("Opening file '%1'."), BD.filepath(filemanagerutil.abbreviate(file)))
+    end
     UIManager:show(InfoMessage:new{
-        text = T(_("Opening file '%1'."), BD.filepath(filemanagerutil.abbreviate(file))),
+        text = msg_text,
+        image = msg_image,
+        image_width = msg_image_w,
+        image_height = msg_image_h,
         timeout = 0.0,
         invisible = seamless,
     })
